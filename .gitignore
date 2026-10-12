@@ -1,0 +1,18 @@
+# Meson
+build/
+
+# Doxygen
+codeDocs/
+
+# TeXworks
+*.run.xml
+*.synctex.gz
+*.bkp
+*.dtmp
+*.aux
+*.bcf
+*.log
+*.pdf
+
+# VS Code
+.vscode/
