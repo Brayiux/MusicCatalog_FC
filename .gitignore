@@ -16,3 +16,11 @@ codeDocs/
 
 # VS Code
 .vscode/
+
+# TagLib
+*.wraplock
+
+# Project
+*.db
+*.[Mm][Pp]3
+music/
