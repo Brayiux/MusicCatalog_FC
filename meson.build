@@ -21,10 +21,13 @@ taglib_proj = cmake.subproject(
 
 taglib_dep = taglib_proj.dependency('tag')
 
+subdir('src/model')
+
 executable(
     'TagLibTest',
     'main.cpp',
     dependencies: [
         sqlite_dep,
-        taglib_dep
+        taglib_dep,
+        model_dep
     ])
