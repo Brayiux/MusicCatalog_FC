@@ -23,12 +23,6 @@ namespace model {
             /** @brief Construye una instancia del DAO */
             MusicCatalogDAO();
 
-            /**
-             * @brief Valida que la base de datos siga el esquema diseñado para
-             * la base da datos musical.
-             */
-            void validateSchema(sqlite3* db);
-
         public:
             /// @brief 
             /// @return La única instancia del DAO.
