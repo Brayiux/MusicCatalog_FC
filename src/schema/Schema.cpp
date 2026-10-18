@@ -64,6 +64,8 @@ namespace schema {
             "FOREIGN KEY   (id_album) REFERENCES albums(id_album)"
         ");";
 
+    Schema::Schema() {}
+
     bool Schema::open(const char* path, sqlite3** db, char** errmsg) {
         
         sqlite3_open(path, db);
