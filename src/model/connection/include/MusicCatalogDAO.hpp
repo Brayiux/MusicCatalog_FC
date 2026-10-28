@@ -17,30 +17,15 @@ namespace model::connection {
         private:
             /** @brief Puntero a la base de datos. */
             sqlite3* db = nullptr;
-            /** @brief Indica si el DAO está inicializado o no. */
-            bool initialized = false;
             /** @brief La única instancia del DAO. */
             static MusicCatalogDAO instance;
 
-            /** @brief Construye una instancia del DAO */
-            MusicCatalogDAO();
+            /** @brief Construye una instancia del DAO
+             * @param db dependencia a la base de datos.
+             */
+            MusicCatalogDAO(sqlite3* db);
 
         public:
-            
-            /**
-             * @brief Indica si el DAO ya ha sido inicializado.
-             * @return @b true si el DAO ya está inicializado,
-             * y @b false si no.
-             */  
-            bool isInitialized();
-            /**
-             * @brief Inicializa el DAO con una base de datos si no está
-             * inicializada.
-             * @param db - Base de datos con la que se inicializa el DAO.
-             * @return @b true si el DAO ya había sido inicializado
-             * y @b false si no.
-             */
-            bool init(sqlite3* db);
             
             #pragma region Inserción de registros
             /**
