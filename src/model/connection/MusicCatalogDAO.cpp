@@ -1,4 +1,4 @@
-#include "MusicCatalogDAO.hpp"
+#include "include/MusicCatalogDAO.hpp"
 #include <sqlite3.h>
 #include <Person.hpp>
 #include <Group.hpp>
@@ -14,6 +14,7 @@ namespace model::connection {
 
     MusicCatalogDAO::MusicCatalogDAO() {}
 
+    #pragma region Inicialización
     bool MusicCatalogDAO::isInitialized() {
         return initialized;
     }
@@ -24,6 +25,14 @@ namespace model::connection {
         }
         this->db = db;
         initialized = true;
+        return true;
     }
+    #pragma endregion
+
+    #pragma region Inserción
+
+
+
+    #pragma endregion
 
 }
