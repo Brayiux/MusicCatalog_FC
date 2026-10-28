@@ -3,12 +3,12 @@ connection_lib = static_library(
     [
         'MusicCatalogDAO.cpp'
     ],
-    dependencies: sqlite_dep,
+    dependencies: [entities_dep, sqlite_dep],
     install: false
 )
 
 connection_dep = declare_dependency(
     link_with: connection_lib,
     include_directories: include_directories('.'),
-    dependencies: sqlite_dep
+    dependencies: [entities_dep, sqlite_dep]
 )

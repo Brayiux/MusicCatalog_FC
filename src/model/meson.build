@@ -1,5 +1,5 @@
-subdir('connection')
 subdir('entities')
+subdir('connection')
 subdir('schema')
 
 model_lib = static_library(
