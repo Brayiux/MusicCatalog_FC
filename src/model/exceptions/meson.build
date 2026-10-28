@@ -1,7 +1,7 @@
 exceptions_lib = static_library(
     'exceptions',
     [
-        'NotEnoughInfoException.cpp'
+        'Exceptions.cpp'
     ],
     install: false
 )

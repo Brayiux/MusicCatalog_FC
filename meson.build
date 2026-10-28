@@ -1,6 +1,7 @@
 project('musicCatalog', ['cpp', 'c'])
 
 subdir('lib/sqlite')
+subdir('lib/doctest')
 
 cmake = import('cmake')
 
@@ -22,6 +23,7 @@ taglib_proj = cmake.subproject(
 taglib_dep = taglib_proj.dependency('tag')
 
 subdir('src/model')
+subdir('tests')
 
 executable(
     'TagLibTest',
