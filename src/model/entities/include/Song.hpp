@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace model {
+namespace model::entities {
     
     /** @brief Contiene la información de una canción ubicada en alguna ruta
      * del usuario. */

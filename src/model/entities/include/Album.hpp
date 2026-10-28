@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace model {
+namespace model::entities {
 
     /** @brief Contiene los datos de un álbum de canciones. */
     struct Album {

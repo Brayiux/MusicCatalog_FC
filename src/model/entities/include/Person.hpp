@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace model {
+namespace model::entities {
 
     /** @brief Contiene los datos de una persona intérprete de una canción. */
     struct Person {

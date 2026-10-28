@@ -1,13 +1,17 @@
+subdir('connection')
+subdir('entities')
+subdir('schema')
+
 model_lib = static_library(
     'model',
     [
-        'MusicCatalogDAO.cpp'
+        'Model.cpp'
     ],
+    dependencies: [connection_dep, entities_dep],
     install: false
 )
 
 model_dep = declare_dependency(
     link_with: model_lib,
-    include_directories: include_directories('include'),
-    dependencies: sqlite_dep
+    dependencies: [connection_dep, entities_dep]
 )

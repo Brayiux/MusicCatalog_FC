@@ -1,6 +1,6 @@
 #include "Schema.hpp"
 
-namespace schema {
+namespace model::schema {
 
     const char* Schema::SCHEMA = 
         "CREATE TABLE types ("

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <sqlite3.h>
-#include "Person.hpp"
-#include "Group.hpp"
-#include "Album.hpp"
-#include "Song.hpp"
+#include <Person.hpp>
+#include <Group.hpp>
+#include <Album.hpp>
+#include <Song.hpp>
 
+using namespace model::entities;
 
-namespace model {
+namespace model::connection {
 
     /** @brief Proporciona una interfaz para la manipulación y acceso a datos dentro
      * de la base de datos musical. */

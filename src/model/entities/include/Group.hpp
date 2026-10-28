@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace model {
+namespace model::entities {
     
     /** @brief Contiene los datos de un grupo musical que puede interpretar
      * una canción */

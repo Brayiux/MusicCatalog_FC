@@ -1,16 +1,18 @@
-#include "include/MusicCatalogDAO.hpp"
+#include "MusicCatalogDAO.hpp"
 #include <sqlite3.h>
+#include <Person.hpp>
+#include <Group.hpp>
+#include <Album.hpp>
+#include <Song.hpp>
+#include <chrono>
 
 
 using namespace std;
+using namespace chrono;
 
-namespace model {
+namespace model::connection {
 
     MusicCatalogDAO::MusicCatalogDAO() {}
-
-    MusicCatalogDAO& MusicCatalogDAO::getInstance() {
-        return instance;
-    }
 
     bool MusicCatalogDAO::isInitialized() {
         return initialized;
@@ -23,4 +25,5 @@ namespace model {
         this->db = db;
         initialized = true;
     }
+
 }

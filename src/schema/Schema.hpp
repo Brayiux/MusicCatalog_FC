@@ -1,6 +1,6 @@
 #include <sqlite3.h>
 
-namespace schema {
+namespace model::schema {
     
     /**
      * Se encarga de manejar la inicialización y finalización de la conexión
