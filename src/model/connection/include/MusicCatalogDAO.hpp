@@ -19,14 +19,13 @@ namespace model::connection {
             sqlite3* db = nullptr;
             /** @brief La única instancia del DAO. */
             static MusicCatalogDAO instance;
-
+            
+        public:
             /** @brief Construye una instancia del DAO
              * @param db dependencia a la base de datos.
              */
             MusicCatalogDAO(sqlite3* db);
 
-        public:
-            
             #pragma region Inserción de registros
             /**
              * @brief Inserta el registro de un intérprete a la base de datos.
