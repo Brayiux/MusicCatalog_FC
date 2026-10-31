@@ -172,6 +172,71 @@ namespace model::connection {
         return true;
     }
 
+    bool MusicCatalogDAO::insertInGroup(string person_name, string group_name) {
+        // Validación de entrada:
+        if (person_name.empty() || group_name.empty()) {
+            throw NotEnoughInfoException("Error: Ninguno de los nombres (persona o grupo) pueden ser vacíos.");
+        }
+        // Validación de la operación por hacer:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT id_person FROM persons WHERE stage_name = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la consulta de la persona.");
+        }
+        sqlite3_bind_text(stmt, 1, person_name.c_str(), -1, SQLITE_TRANSIENT);
+
+        int op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return false;
+        }
+        if (op != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta de la persona.");
+        }
+        int id_person = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+
+        stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT id_group FROM groups WHERE name = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la consulta del grupo.");
+        }
+        sqlite3_bind_text(stmt, 1, group_name.c_str(), -1, SQLITE_TRANSIENT);
+
+        op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return false;
+        }
+        if (op != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta del grupo.");
+        }
+        int id_group = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+        // Inserción y Validación de la operación inserción:
+        stmt = nullptr;
+
+        if (sqlite3_prepare_v2(db, "INSERT INTO in_group (id_person, id_group) VALUES (?,?);", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Erorr: Al preparar la inserción.");
+        }
+        sqlite3_bind_int(stmt, 1, id_person);
+        sqlite3_bind_int(stmt, 2, id_group);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la inserción.");
+        }
+        sqlite3_finalize(stmt);
+        // Notificación de la inserción:
+        return true;
+    }
+
+
     #pragma endregion
 
 }

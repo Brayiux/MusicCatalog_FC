@@ -84,3 +84,33 @@ TEST_CASE("Pruebas de inserción de grupo") {
 
     REQUIRE(schema.close(db));
 }
+
+TEST_CASE("Pruebas de inserción de persona en grupo") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Person pd;
+    pd.stage_name = "Persona";
+    REQUIRE(dao.insertPerson(pd));
+
+    Group gd;
+    gd.name = "Grupo";
+    REQUIRE(dao.insertGroup(gd));
+
+    SUBCASE("Inserción de persona en grupo") {
+        CHECK(dao.insertInGroup("Persona", "Grupo"));
+    }
+
+    SUBCASE("No se puede insertar una persona en un grupo que no existe") {
+        CHECK(dao.insertInGroup("Persona", "Desconocido") == false);
+    }
+
+    SUBCASE("No se puede insertar una persona que no existe en un grupo en un grupo que no existe") {
+        CHECK(dao.insertInGroup("Desconocido", "Grupo") == false);
+    }
+
+    REQUIRE(schema.close(db));
+}
