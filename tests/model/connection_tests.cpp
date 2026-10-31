@@ -114,3 +114,24 @@ TEST_CASE("Pruebas de inserción de persona en grupo") {
 
     REQUIRE(schema.close(db));
 }
+
+TEST_CASE("Pruebas de inserción de álbum") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    SUBCASE("Inserción de álbum") {
+        Album ad;
+        ad.path = "~";
+        CHECK(dao.insertAlbum(ad));
+    }
+    
+    SUBCASE("No se puede insertar si no hay path") {
+        Album ad;
+        CHECK_THROWS(dao.insertAlbum(ad));
+    }
+
+    REQUIRE(schema.close(db));
+}

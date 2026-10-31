@@ -92,7 +92,7 @@ namespace model::connection {
         if (sqlite3_prepare_v2(db, "INSERT INTO persons (stage_name, real_name, birth_date, death_date) VALUES (?,?,?,?);", -1, &stmt, nullptr)
                 != SQLITE_OK) {
             sqlite3_finalize(stmt);
-            throw SQLiteException("Erorr: Al preparar la inserción.");
+            throw SQLiteException("Error: Al preparar la inserción.");
         }
         sqlite3_bind_text(stmt, 1, data.stage_name.value().c_str(), -1, SQLITE_TRANSIENT);
         if (data.real_name.has_value()) {
@@ -148,7 +148,7 @@ namespace model::connection {
         if (sqlite3_prepare_v2(db, "INSERT INTO groups (name, start_date, end_date) VALUES (?,?,?);", -1, &stmt, nullptr)
                 != SQLITE_OK) {
             sqlite3_finalize(stmt);
-            throw SQLiteException("Erorr: Al preparar la inserción.");
+            throw SQLiteException("Error: Al preparar la inserción.");
         }
         sqlite3_bind_text(stmt, 1, data.name.value().c_str(), -1, SQLITE_TRANSIENT);
         if (data.start_date.has_value()) {
@@ -223,10 +223,61 @@ namespace model::connection {
         if (sqlite3_prepare_v2(db, "INSERT INTO in_group (id_person, id_group) VALUES (?,?);", -1, &stmt, nullptr)
                 != SQLITE_OK) {
             sqlite3_finalize(stmt);
-            throw SQLiteException("Erorr: Al preparar la inserción.");
+            throw SQLiteException("Error: Al preparar la inserción.");
         }
         sqlite3_bind_int(stmt, 1, id_person);
         sqlite3_bind_int(stmt, 2, id_group);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la inserción.");
+        }
+        sqlite3_finalize(stmt);
+        // Notificación de la inserción:
+        return true;
+    }
+
+    bool MusicCatalogDAO::insertAlbum(Album data) {
+        // Validación de entrada:
+        if (!data.path.has_value()) {
+            throw NotEnoughInfoException("Error: No se proporciona un path del álbum.");
+        }
+        // Validación de la operación por hacer:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT COUNT(*) FROM albums WHERE path = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la consulta.");
+        }
+        string path = data.path.value().string();
+        sqlite3_bind_text(stmt, 1, path.c_str(), -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta.");
+        }
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+        if (count > 0) {
+            return false;
+        }
+        // Inserción y Validación de la operación inserción:
+        stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "INSERT INTO albums (path, name, year) VALUES (?,?,?);", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la inserción.");
+        }
+        sqlite3_bind_text(stmt, 1, path.c_str(), -1, SQLITE_TRANSIENT);
+        if (data.name.has_value()) {
+            sqlite3_bind_text(stmt, 2, data.name.value().c_str(), -1, SQLITE_TRANSIENT);
+        } else {
+            sqlite3_bind_null(stmt, 2);
+        }
+        if (data.year.has_value()) {
+            sqlite3_bind_int(stmt, 3, static_cast<int>(data.year.value()));
+        } else {
+            sqlite3_bind_null(stmt, 3);
+        }
+
         if (sqlite3_step(stmt) != SQLITE_DONE) {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al ejecutar la inserción.");
