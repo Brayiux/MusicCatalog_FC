@@ -20,6 +20,16 @@ namespace model::connection {
             /** @brief La única instancia del DAO. */
             static MusicCatalogDAO instance;
 
+            #pragma region Obtención de datos
+
+            /**
+             * Obtiene el ID de un intérprete por su nombre, o -1
+             * si no lo encuentra.
+             * @param name Nombre del intérprete.
+             */
+            int getPerformerId(string name);
+            #pragma endregion
+
         public:
             /** @brief Construye una instancia del DAO
              * @param db dependencia a la base de datos.
