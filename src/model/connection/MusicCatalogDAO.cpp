@@ -289,7 +289,82 @@ namespace model::connection {
         return true;
     }
 
-    
+    bool MusicCatalogDAO::insertSong(Song data) {
+        // Validación de entrada:
+        if (!data.path.has_value()) {
+            throw NotEnoughInfoException("Error: No se proporciona una ruta.");
+        }
+        if (!data.performer.has_value()) {
+            throw NotEnoughInfoException("Error: No se proporciona un intérprete.");
+        }
+        if (!data.album.has_value()) {
+            throw NotEnoughInfoException("Error: No se proporciona un álbum.");
+        }
+        // Validación de la operación por hacer:
+        int id_performer = getPerformerId(data.performer.value());
+        if (id_performer == -1) {
+            return false;
+        }
+        int id_album = getAlbumId(data.album.value());
+        if (id_album == -1) {
+            return false;
+        }
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT COUNT(*) FROM rolas WHERE path = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la consulta");
+        }
+        sqlite3_bind_text(stmt, 1, data.path.value().string().c_str(), -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta.");
+        }
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+        if (count > 0 ) {
+            return false;
+        }
+        // Inserción y Validación de la operación inserción:
+        stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "INSERT INTO rolas (id_performer, id_album, path, title, track, year, genre) VALUES (?,?,?,?,?,?,?);", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la inserción.");
+        }
+        sqlite3_bind_int(stmt, 1, id_performer);
+        sqlite3_bind_int(stmt, 2, id_album);
+        string path = data.path.value().string();
+        sqlite3_bind_text(stmt, 3, path.c_str(), -1, SQLITE_TRANSIENT);
+        if (data.title.has_value()) {
+            sqlite3_bind_text(stmt, 4, data.title.value().c_str(), -1, SQLITE_TRANSIENT);
+        } else {
+            sqlite3_bind_null(stmt, 4);
+        }
+        if (data.track.has_value()) {
+            sqlite3_bind_int(stmt, 5, data.track.value());
+        } else {
+            sqlite3_bind_null(stmt, 5);
+        }
+        if (data.year.has_value()) {
+            sqlite3_bind_int(stmt, 6, static_cast<int>(data.year.value()));
+        } else {
+            sqlite3_bind_null(stmt, 6);
+        }
+        if (data.genre.has_value()) {
+            sqlite3_bind_text(stmt, 7, data.genre.value().c_str(), -1, SQLITE_TRANSIENT);
+        } else {
+            sqlite3_bind_null(stmt, 7);
+        }
+
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la inserción.");
+        }
+        sqlite3_finalize(stmt);
+        // Notificación de inserción:
+        return true;
+    }
 
     #pragma endregion
 
@@ -302,37 +377,42 @@ namespace model::connection {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al preparar la consulta.");
         }
-        sqlite3_bind_text(stmt, 1, name.c_str(), -1, nullptr);
+        sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
         int op = sqlite3_step(stmt);
         if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
             return -1;
         }
-        if (sqlite3_step(stmt) != SQLITE_ROW) {
+        if (op != SQLITE_ROW) {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al ejecutar la consulta.");
         }
+        int id = sqlite3_column_int(stmt, 0);
         sqlite3_finalize(stmt);
-        return sqlite3_column_int(stmt, 0);
+        return id;
     }
 
     int MusicCatalogDAO::getAlbumId(filesystem::path path) {
         sqlite3_stmt* stmt = nullptr;
-        if (sqlite3_prepare_v2(db, "SELECT id_performer FROM albums WHERE path = ?;", -1, &stmt, nullptr)
+        if (sqlite3_prepare_v2(db, "SELECT id_album FROM albums WHERE path = ?;", -1, &stmt, nullptr)
                 != SQLITE_OK) {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al preparar la consulta.");
         }
-        sqlite3_bind_text(stmt, 1, path.string().c_str(), -1, nullptr);
+        string p = path.string();
+        sqlite3_bind_text(stmt, 1, p.c_str(), -1, SQLITE_TRANSIENT);
         int op = sqlite3_step(stmt);
         if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
             return -1;
         }
-        if (sqlite3_step(stmt) != SQLITE_ROW) {
+        if (op != SQLITE_ROW) {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al ejecutar la consulta.");
         }
+        int id = sqlite3_column_int(stmt, 0);
         sqlite3_finalize(stmt);
-        return sqlite3_column_int(stmt, 0);
+        return id;
     }
 
     #pragma endregion

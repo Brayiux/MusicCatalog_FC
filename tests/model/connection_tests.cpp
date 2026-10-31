@@ -135,3 +135,59 @@ TEST_CASE("Pruebas de inserción de álbum") {
 
     REQUIRE(schema.close(db));
 }
+
+TEST_CASE("Pruebas de inserción de canción") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    REQUIRE(dao.insertPerformer(0, "Persona"));
+    Album ad;
+    ad.path = "~";
+    REQUIRE(dao.insertAlbum(ad));
+    
+    SUBCASE("Insertar canción con una ruta, intérprete y álbum válidos.") {
+        Song sd;
+        sd.path = "~/song.mp3";
+        sd.performer = "Persona";
+        sd.album = "~";
+        CHECK(dao.insertSong(sd));
+    }
+    SUBCASE("Insertar canción sin ruta no es válido") {
+        Song sd;
+        sd.performer = "Persona";
+        sd.album = "~";
+        CHECK_THROWS(dao.insertSong(sd));
+    }
+    SUBCASE("Insertar canción sin intérprete no es válido") {
+        Song sd;
+        sd.path = "~/song.mp3";
+        sd.album = "~";
+        CHECK_THROWS(dao.insertSong(sd));
+    }
+    SUBCASE("Insertar canción sin álbum no es válido") {
+        Song sd;
+        sd.path = "~/song.mp3";
+        sd.performer = "Persona";
+        CHECK_THROWS(dao.insertSong(sd));
+    }
+    SUBCASE("Insertar canción con intérprete no existente no es válido") {
+        Song sd;
+        sd.path = "~/song.mp3";
+        sd.performer = "Desconocido";
+        sd.album = "~";
+        CHECK(dao.insertSong(sd) == false);
+    }
+    SUBCASE("Insertar canción con álbum no existente no es válido") {
+        Song sd;
+        sd.path = "~/song.mp3";
+        sd.performer = "Persona";
+        sd.album = "Desconocido";
+        CHECK(dao.insertSong(sd) == false);
+    }
+
+    REQUIRE(schema.close(db));
+}
+
