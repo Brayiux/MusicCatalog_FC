@@ -7,7 +7,7 @@ namespace model::exceptions {
     /**
      * Ocurre cuando no existe información suficiente dentro de un paquete.
      */
-    class NotEnoughInfoException : std::exception {
+    class NotEnoughInfoException : public std::exception {
         private:
             std::string msg;
 

@@ -8,7 +8,7 @@ namespace model::exceptions {
      * Ocurre cuando hay un error al realizar una operación con una base de datos SQL usando
      * SQLite.
      */
-    class SQLiteException : std::exception {
+    class SQLiteException : public std::exception {
         private:
             std::string msg;
 
