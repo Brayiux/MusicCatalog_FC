@@ -30,6 +30,14 @@ namespace model::connection {
             int getPerformerId(string name);
             #pragma endregion
 
+            /**
+             * Obtiene el ID de un álbum por su path, o -1
+             * si no lo encuentra.
+             * @param path Ruta del álbum.
+             */
+            int getAlbumId(filesystem::path path);
+            #pragma endregion
+
         public:
             /** @brief Construye una instancia del DAO
              * @param db dependencia a la base de datos.

@@ -289,23 +289,7 @@ namespace model::connection {
         return true;
     }
 
-    bool MusicCatalogDAO::insertSong(Song data) {
-        // Validación de entrada:
-        if (!data.path.has_value()) {
-            throw NotEnoughInfoException("Error: No se proporciona un path válido.");
-        }
-        // Validación de la operación por hacer:
-        sqlite3_stmt* stmt = nullptr;
-        int id_performer;
-        int id_album;
-        if (sqlite3_prepare_v2(db, "SELECT COUNT(*) FROM songs WHERE path = ?;", -1, &stmt, nullptr) != SQLITE_OK) {
-            sqlite3_finalize(stmt);
-            throw SQLiteException("Error: Al preparar la consulta");
-        }
-
-
-
-    }
+    
 
     #pragma endregion
 
@@ -327,8 +311,28 @@ namespace model::connection {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al ejecutar la consulta.");
         }
+        sqlite3_finalize(stmt);
         return sqlite3_column_int(stmt, 0);
+    }
 
+    int MusicCatalogDAO::getAlbumId(filesystem::path path) {
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT id_performer FROM albums WHERE path = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la consulta.");
+        }
+        sqlite3_bind_text(stmt, 1, path.string().c_str(), -1, nullptr);
+        int op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            return -1;
+        }
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta.");
+        }
+        sqlite3_finalize(stmt);
+        return sqlite3_column_int(stmt, 0);
     }
 
     #pragma endregion
