@@ -58,3 +58,29 @@ TEST_CASE("Pruebas de inserción de persona") {
 
     REQUIRE(schema.close(db));
 }
+
+TEST_CASE("Pruebas de inserción de grupo") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    SUBCASE("Inserción de grupo") {
+        Group gd;
+        gd.name = "Grupo";
+        gd.start_date = year_month_day{year{2000}, month{1}, day{1}};
+        gd.end_date = year_month_day{year{2020}, month{1}, day{1}};
+        REQUIRE(dao.insertGroup(gd));
+    }
+
+    SUBCASE("No se admiten nombres de grupo vacíos") {
+        Group gd;
+        gd.name = "";
+        gd.start_date = year_month_day{year{2000}, month{1}, day{1}};
+        gd.end_date = year_month_day{year{2020}, month{1}, day{1}};
+        CHECK_THROWS(dao.insertGroup(gd));
+    }
+
+    REQUIRE(schema.close(db));
+}
