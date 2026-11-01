@@ -88,34 +88,60 @@ namespace model::connection {
 
             #pragma region Obtención de datos
             /**
-             * Obtiene el ID de un intérprete por su nombre, o -1
+             * @brief Obtiene el ID de un intérprete por su nombre, o -1
              * si no lo encuentra.
              * @param name Nombre del intérprete.
              */
             int getPerformerId(string name);
             /**
-             * Obtiene el ID de una persona por su nombre, o -1
+             * @brief Obtiene el ID de una persona por su nombre, o -1
              * si no la encuentra.
              * @param name Nombre de la persona.
              */
             int getPersonId(string name);
             /**
-             * Obtiene el ID de un grupo por su nombre, o -1
+             * @brief Obtiene el ID de un grupo por su nombre, o -1
              * si no lo encuentra.
              */
             int getGroupId(string name);
             /**
-             * Obtiene el ID de un álbum por su path, o -1
+             * @brief Obtiene el ID de un álbum por su path, o -1
              * si no lo encuentra.
              * @param path Ruta del álbum.
              */
             int getAlbumId(filesystem::path path);
             /**
-             * Obtiene el ID de una canción por su path, o -1
+             * @brief Obtiene el ID de una canción por su path, o -1
              * si no lo encuentra.
              * @param path Ruta de la canción.
              */
             int getSongId(filesystem::path);
+
+            /**
+             * @brief Obtiene la información de una persona.
+             * @param stage_name El nombre artístico de la persona.
+             * @returns La información de la persona o un nullptr si no la encuentra.
+             */
+            Person* getPerson(string stage_name);
+            /**
+             * @brief Obtiene la información de un grupo.
+             * @param name Nombre del grupo
+             * @returns La información de un grupo o un nullptr si no lo encuentra.
+             */
+            Group* getGroup(string name);
+            /**
+             * @brief Obtiene la información de un álbum.
+             * @param path Ruta del álbum
+             * @returns La información del álbum o un nullptr si no lo encuentra.
+             */
+            Album* getAlbum(filesystem::path path);
+            /**
+             * @brief Obtiene la información de una canción.
+             * @param path Ruta de la canción.
+             * @returns La información de la canción o un nullptr si no la encuentra.
+             */
+            Album* getSong(filesystem::path path);
+            
             #pragma endregion
 
             #pragma region Inserción de registros
