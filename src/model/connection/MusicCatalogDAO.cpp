@@ -64,6 +64,243 @@ namespace model::connection {
         return getEntityId("id_rola", "rolas", "path", path.string());
     }
 
+    Performer* MusicCatalogDAO::getPerformer(int id) {
+        // Ejecución de la búsqueda:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT id_type, name FROM performers WHERE id_performer = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la búsqueda.");
+        }
+        sqlite3_bind_int(stmt, 1, id);
+        int op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return nullptr;
+        }
+        if (op != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la búsqueda.");
+        }
+        // Llenado de datos:
+        Performer* p = new Performer();
+
+        p->id = id;
+        if (sqlite3_column_type(stmt, 0) != SQLITE_NULL) {
+            p->type = sqlite3_column_int(stmt, 0);
+        }
+        const unsigned char* n = sqlite3_column_text(stmt, 1);
+        if (n != nullptr) {
+            p->name = reinterpret_cast<const char*>(n);
+        }
+
+        sqlite3_finalize(stmt);
+        // Retorno de la información:
+        return p;
+    }
+
+    Person* MusicCatalogDAO::getPerson(int id) {
+        // Validación de la operación por hacer:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT stage_name, real_name, birth_date, death_date FROM persons WHERE id_person = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la búsqueda.");
+        }
+        sqlite3_bind_int(stmt, 1, id);
+        int op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return nullptr;
+        }
+        if (op != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la búsqueda.");
+        }
+        // Llenado de datos:
+        Person* p = new Person();
+        p->id = id;
+        const unsigned char* sn = sqlite3_column_text(stmt, 0);
+        if (sn != nullptr) {
+            p->stage_name = reinterpret_cast<const char*>(sn);
+        }
+        const unsigned char* rn = sqlite3_column_text(stmt, 1);
+        if (rn != nullptr) {
+            p->real_name = reinterpret_cast<const char*>(rn);
+        }
+        const unsigned char* bd = sqlite3_column_text(stmt, 2);
+        if (bd != nullptr) {
+            year_month_day bd_ymd;
+            istringstream{reinterpret_cast<const char*>(bd)} >> parse("%F", bd_ymd);
+            p->birth_date = bd_ymd;
+        }
+        const unsigned char* dd = sqlite3_column_text(stmt, 3);
+        if (dd != nullptr) {
+            year_month_day dd_ymd;
+            istringstream{reinterpret_cast<const char*>(dd)} >> parse("%F", dd_ymd);
+            p->death_date = dd_ymd;
+        }
+        sqlite3_finalize(stmt);
+        // Retorno de la información:
+        return p;
+    }
+
+    Group* MusicCatalogDAO::getGroup(int id) {
+        // Ejecución de la búsqueda:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT name, start_date, end_date FROM groups WHERE id_group = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la consulta.");
+        }
+        sqlite3_bind_int(stmt, 1, id);
+        int op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return nullptr;
+        }
+        if (op != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta.");
+        }
+        // Llenado de datos:
+        Group* g = new Group();
+
+        g->id = id;
+        const unsigned char* n = sqlite3_column_text(stmt, 0);
+        if (n != nullptr) {
+            g->name = reinterpret_cast<const char*>(n);
+        }
+        const unsigned char* sd = sqlite3_column_text(stmt, 1);
+        if (sd != nullptr) {
+            year_month_day sd_ymd;
+            istringstream{reinterpret_cast<const char*>(sd)} >> parse("%F", sd_ymd);
+            g->start_date = sd_ymd;
+        }
+        const unsigned char* ed = sqlite3_column_text(stmt, 2);
+        if (ed != nullptr) {
+            year_month_day ed_ymd;
+            istringstream{reinterpret_cast<const char*>(ed)} >> parse("%F", ed_ymd);
+            g->end_date = ed_ymd;
+        }
+        sqlite3_finalize(stmt);
+        // Retorno de la información:
+        return g;
+    }
+    
+    Album* MusicCatalogDAO::getAlbum(int id) {
+        // Ejecución de la búsqueda:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT path, name, year FROM albums WHERE id_album = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar consulta.");
+        }
+        sqlite3_bind_int(stmt, 1, id);
+        int op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return nullptr;
+        }
+        if (op != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta.");
+        }
+        // Llenado de datos:
+        Album* a = new Album();
+
+        a->id = id;
+        const unsigned char* p = sqlite3_column_text(stmt, 0);
+        if (p != nullptr) {
+            a->path = reinterpret_cast<const char*>(p);
+        }
+        const unsigned char* n = sqlite3_column_text(stmt, 1);
+        if (n != nullptr) {
+            a->name = reinterpret_cast<const char*>(n);
+        }
+        if (sqlite3_column_type(stmt, 2) != SQLITE_NULL) {
+            a->year = year{sqlite3_column_int(stmt, 2)};
+        }
+
+        sqlite3_finalize(stmt);
+        // Retorno de la información:
+        return a;
+    }
+
+    Song* MusicCatalogDAO::getSong(int id) {
+        // Ejecución de la búsqueda:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "SELECT id_performer, id_album, path, title, track, year, genre FROM rolas WHERE id_rola = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la búsqueda.");
+        }
+        sqlite3_bind_int(stmt, 1, id);
+        int op = sqlite3_step(stmt);
+        if (op == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return nullptr;
+        }
+        if (op != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la consulta.");
+        }
+        // Llenado de datos:
+        Song* s = new Song();
+        s->id = id;
+        if (sqlite3_column_type(stmt, 0) != SQLITE_NULL) {
+            Performer* p = getPerformer(sqlite3_column_int(stmt, 0));
+            if (p != nullptr && p->name.has_value()) {
+                s->performer = p->name.value();
+            }
+            delete p;
+        }
+        if (sqlite3_column_type(stmt, 1) != SQLITE_NULL) {
+            Album* a = getAlbum(sqlite3_column_int(stmt, 1));
+            if (a != nullptr && a->path.has_value()) {
+                s->album = a->path.value().string();
+            }
+            delete a;
+        }
+        const unsigned char* p = sqlite3_column_text(stmt, 2);
+        if (p != nullptr) {
+            s->path = reinterpret_cast<const char*>(p);
+        }
+        const unsigned char* ti = sqlite3_column_text(stmt, 3);
+        if (ti != nullptr) {
+            s->title = reinterpret_cast<const char*>(ti);
+        }
+        if (sqlite3_column_type(stmt, 4) != SQLITE_NULL) {
+            s->track = sqlite3_column_int(stmt, 4);
+        }
+        if (sqlite3_column_type(stmt, 5) != SQLITE_NULL) {
+            s->year = year{sqlite3_column_int(stmt, 5)};
+        }
+        const unsigned char* g = sqlite3_column_text(stmt, 6);
+        if (g != nullptr) {
+            s->genre = reinterpret_cast<const char*>(g);
+        }
+        sqlite3_finalize(stmt);
+        // Retorno de la información:
+        return s;
+    }
+
+    Person* MusicCatalogDAO::getPerson(string stage_name) {
+        return getPerson(getPersonId(stage_name));
+    }
+
+    Group* MusicCatalogDAO::getGroup(string name) {
+        return getGroup(getGroupId(name));
+    }
+
+    Album* MusicCatalogDAO::getAlbum(filesystem::path path) {
+        return getAlbum(getAlbumId(path));
+    }
+
+    Song* MusicCatalogDAO::getSong(filesystem::path path) {
+        return getSong(getSongId(path));
+    }
+
     #pragma endregion
 
     #pragma region Inserción
@@ -487,5 +724,6 @@ namespace model::connection {
 
     #pragma endregion
 
+    
 
 }

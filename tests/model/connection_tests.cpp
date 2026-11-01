@@ -105,6 +105,131 @@ TEST_CASE("Obtener ID de canciones") {
 
 #pragma endregion
 
+#pragma region Obtener datos de entidades
+
+TEST_CASE("Obtener datos de personas") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Person pd;
+    pd.stage_name = "Persona";
+    pd.real_name = "Nombre Real";
+    pd.birth_date = year_month_day{year(2000), month(1), day(1)};
+    dao.insertPerson(pd);
+    
+    SUBCASE("Obtener datos de persona existente") {
+        Person* p = dao.getPerson("Persona");
+        CHECK(p->id.value() == 1);
+        CHECK(p->stage_name.value() == "Persona");
+        CHECK(p->real_name.value() == "Nombre Real");
+        CHECK(p->birth_date.value() == year_month_day{year(2000), month(1), day(1)});
+        CHECK(!p->death_date.has_value());
+        delete p;
+    }
+
+    SUBCASE("Obtener datos de persona no existente") {
+        Person* p = dao.getPerson("No existente");
+        CHECK(p == nullptr);
+        delete p;
+    }
+
+    REQUIRE(schema.close(db));
+}
+
+TEST_CASE("Obtener datos de grupos") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Group gd;
+    gd.name = "Grupo";
+    gd.start_date = year_month_day{year(2000), month(1), day(1)};
+    dao.insertGroup(gd);
+    
+    SUBCASE("Obtener datos de grupo existente") {
+        Group* p = dao.getGroup("Grupo");
+        CHECK(p->id.value() == 1);
+        CHECK(p->name.value() == "Grupo");
+        CHECK(p->start_date.value() == year_month_day{year(2000), month(1), day(1)});
+        CHECK(!p->end_date.has_value());
+        delete p;
+    }
+
+    SUBCASE("Obtener datos de grupo no existente") {
+        Group* p = dao.getGroup("No existente");
+        CHECK(p == nullptr);
+        delete p;
+    }
+    
+    REQUIRE(schema.close(db));
+}
+
+TEST_CASE("Obtener datos de álbumes") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Album ad1;
+    ad1.path = "~/Album1";
+    ad1.name = "Álbum 1";
+    ad1.year = year{2000};
+    REQUIRE(dao.insertAlbum(ad1));
+
+
+    SUBCASE("Obtener datos de álbum existente con todos los datos llenos") {
+        Album* a = dao.getAlbum("~/Album1");
+        CHECK(a->id.value() == 1);
+        CHECK(a->path.value() == "~/Album1");
+        CHECK(a->name.value() == "Álbum 1");
+        CHECK(a->year.value() == year{2000});
+        delete a;
+    }
+
+    Album ad2;
+    ad2.path = "~/Album2";
+    ad2.name = "Álbum 2";
+    REQUIRE(dao.insertAlbum(ad2));
+
+    SUBCASE("Obtener datos de álbum existente sin todos los datos llenos") {
+        Album* a = dao.getAlbum("~/Album2");
+        CHECK(a->id.value() == 2);
+        CHECK(a->path.value() == "~/Album2");
+        CHECK(a->name.value() == "Álbum 2");
+        CHECK(!a->year.has_value());
+        delete a;
+    }
+
+    SUBCASE("Obtener datos de álbum no existente") {
+        Album* a = dao.getAlbum("~/no_existente");
+        CHECK(a == nullptr);
+        delete a;
+    }
+
+    REQUIRE(schema.close(db));
+    
+}
+
+TEST_CASE("Obtener datos de canciones") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    
+    
+    REQUIRE(schema.close(db));
+}
+
+#pragma endregion
+
 #pragma region Pruebas de inserción de registros
 
 TEST_CASE("Pruebas de inserción de intérprete") {

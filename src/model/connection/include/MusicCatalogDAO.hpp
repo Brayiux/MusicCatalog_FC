@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sqlite3.h>
+#include <Performer.hpp>
 #include <Person.hpp>
 #include <Group.hpp>
 #include <Album.hpp>
@@ -118,6 +119,37 @@ namespace model::connection {
             int getSongId(filesystem::path);
 
             /**
+             * @brief Obtiene la información de un intérprete por su ID.
+             * @param id El ID en la base de datos.
+             * @returns La información del intérprete o nullptr si no lo encuentra.
+             */
+            Performer* getPerformer(int id);
+            /**
+             * Obtiene la información de una persona por su ID.
+             * @param id El ID en la base de datos.
+             * @returns La información de la persona o nullptr si no la encuentra.
+             */
+            Person* getPerson(int id);
+            /**
+             * Obtiene la información de un grupo por su ID.
+             * @param id El ID en la base de datos.
+             * @returns La información del grupo o nullptr si no lo encuentra.
+             */
+            Group* getGroup(int id);
+            /**
+             * Obtiene la información de un álbum por su ID.
+             * @param id El ID en la base de datos.
+             * @returns La información del álbum o nullptr si no lo encuentra.
+             */
+            Album* getAlbum(int id);
+            /**
+             * Obtiene la información de una canción por su ID.
+             * @param id El ID en la base de datos.
+             * @returns La información de la canción o nullptr si no la encuentra.
+             */
+            Song* getSong(int id);
+
+            /**
              * @brief Obtiene la información de una persona.
              * @param stage_name El nombre artístico de la persona.
              * @returns La información de la persona o un nullptr si no la encuentra.
@@ -140,8 +172,8 @@ namespace model::connection {
              * @param path Ruta de la canción.
              * @returns La información de la canción o un nullptr si no la encuentra.
              */
-            Album* getSong(filesystem::path path);
-            
+            Song* getSong(filesystem::path path);
+
             #pragma endregion
 
             #pragma region Inserción de registros

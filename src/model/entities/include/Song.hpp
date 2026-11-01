@@ -12,6 +12,8 @@ namespace model::entities {
     /** @brief Contiene la información de una canción ubicada en alguna ruta
      * del usuario. */
     struct Song {
+        /** @brief Identificador de la canción. */
+        optional<int> id;
         /** @brief Intérprete de la canción. */
         optional<string> performer;
         /** @brief Álbum al cual pertenece. */
