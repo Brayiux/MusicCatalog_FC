@@ -413,7 +413,7 @@ namespace model::connection {
 
     #pragma endregion
 
-    #pragma region Remoción
+    #pragma region Eliminación
 
     bool MusicCatalogDAO::deleteEntity(string table_name, string id_name, int id_entity) {
         // Validación de la operación por hacer:
