@@ -105,9 +105,6 @@ TEST_CASE("Obtener ID de canciones") {
 
 #pragma endregion
 
-
-
-
 #pragma region Pruebas de inserción de registros
 
 TEST_CASE("Pruebas de inserción de intérprete") {
@@ -290,6 +287,164 @@ TEST_CASE("Pruebas de inserción de canción") {
     }
 
     REQUIRE(schema.close(db));
+}
+
+#pragma endregion
+
+#pragma region Pruebas de eliminación de registros
+
+TEST_CASE("Eliminar intérpretes") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    REQUIRE(dao.insertPerformer(0, "Persona"));
+
+    SUBCASE("Eliminar intérprete existente") {
+        CHECK(dao.deletePerformer("Persona") == true);
+    }
+
+    SUBCASE("Eliminar intérprete no existente") {
+        CHECK(dao.deletePerformer("No existente") == false);
+    }
+
+    REQUIRE(schema.close(db));
+    
+}
+
+TEST_CASE("Eliminar personas") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Person pd;
+    pd.stage_name = "Persona";
+    REQUIRE(dao.insertPerson(pd));
+
+    SUBCASE("Eliminar intérprete existente") {
+        CHECK(dao.deletePerson("Persona") == true);
+    }
+
+    SUBCASE("Eliminar intérprete no existente") {
+        CHECK(dao.deletePerson("No existente") == false);
+    }
+
+    REQUIRE(schema.close(db));
+    
+}
+
+TEST_CASE("Eliminar grupos") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Group gd;
+    gd.name = "Grupo";
+    REQUIRE(dao.insertGroup(gd));
+
+    SUBCASE("Eliminar grupo existente") {
+        CHECK(dao.deleteGroup("Grupo") == true);
+    }
+
+    SUBCASE("Eliminar intérprete no existente") {
+        CHECK(dao.deleteGroup("No existente") == false);
+    }
+
+    REQUIRE(schema.close(db));
+    
+}
+
+TEST_CASE("Eliminar personas en grupos") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Person pd;
+    pd.stage_name = "Persona";
+    REQUIRE(dao.insertPerson(pd));
+
+    Group gd;
+    gd.name = "Grupo";
+    REQUIRE(dao.insertGroup(gd));
+
+    REQUIRE(dao.insertInGroup("Persona", "Grupo"));
+
+    SUBCASE("Eliminar persona en grupo existentes") {
+        CHECK(dao.deleteInGroup("Persona", "Grupo") == true);
+    }
+
+    SUBCASE("Eliminar persona no existente grupo existente") {
+        CHECK(dao.deleteInGroup("No existente", "Grupo") == false);
+    }
+
+    SUBCASE("Eliminar persona existente grupo no existente") {
+        CHECK(dao.deleteInGroup("Persona", "No existente") == false);
+    }
+
+    REQUIRE(schema.close(db));
+    
+}
+
+TEST_CASE("Eliminar álbumes") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Album ad;
+    ad.path = "~";
+    REQUIRE(dao.insertAlbum(ad));
+
+    SUBCASE("Eliminar álbum existente") {
+        CHECK(dao.deleteAlbum("~") == true);
+    }
+
+    SUBCASE("Eliminar álbum no existente") {
+        CHECK(dao.deleteAlbum("~/no_existente") == false);
+    }
+
+    REQUIRE(schema.close(db));
+    
+}
+
+TEST_CASE("Eliminar canciones") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    REQUIRE(dao.insertPerformer(0, "Persona"));
+
+    Album ad;
+    ad.path = "~";
+    REQUIRE(dao.insertAlbum(ad));
+
+    Song sd;
+    sd.path = "~/song.mp3";
+    sd.performer = "Persona";
+    sd.album = "~";
+    REQUIRE(dao.insertSong(sd));
+
+    SUBCASE("Eliminar canción existente") {
+        CHECK(dao.deleteSong("~/song.mp3") == true);
+    }
+
+    SUBCASE("Eliminar álbum no existente") {
+        CHECK(dao.deleteSong("~/no_existente") == false);
+    }
+
+    REQUIRE(schema.close(db));
+    
 }
 
 #pragma endregion
