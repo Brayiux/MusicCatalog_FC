@@ -107,6 +107,9 @@ TEST_CASE("Obtener ID de canciones") {
 
 
 
+
+#pragma region Pruebas de inserción de registros
+
 TEST_CASE("Pruebas de inserción de intérprete") {
 
     sqlite3* db = nullptr;
@@ -128,8 +131,6 @@ TEST_CASE("Pruebas de inserción de intérprete") {
 
     REQUIRE(schema.close(db));
 }
-
-#pragma region Pruebas de inserción de registros
 
 TEST_CASE("Pruebas de inserción de persona") {
     sqlite3* db = nullptr;
