@@ -223,7 +223,37 @@ TEST_CASE("Obtener datos de canciones") {
 
     MusicCatalogDAO dao(db);
 
-    
+    REQUIRE(dao.insertPerformer(0, "Persona"));
+
+    Album ad;
+    ad.path = "~";
+    REQUIRE(dao.insertAlbum(ad));
+
+    Song sd;
+    sd.path = "~/song.mp3";
+    sd.performer = "Persona";
+    sd.album = "~";
+    sd.year = year{2000};
+    sd.genre = "rock";
+    REQUIRE(dao.insertSong(sd));
+
+    SUBCASE("Obtener datos de canción existente") {
+        Song* s = dao.getSong("~/song.mp3");
+        CHECK(s->id == 1);
+        CHECK(s->performer == "Persona");
+        CHECK(s->album == "~");
+        CHECK(s->path == "~/song.mp3");
+        CHECK(!s->title.has_value());
+        CHECK(s->year == year{2000});
+        CHECK(s->genre == "rock");
+        delete s;
+    }
+
+    SUBCASE("Obtener datos de canción no existente") {
+        Song* s = dao.getSong("~/no_existente");
+        CHECK(s == nullptr);
+        delete s;
+    }
     
     REQUIRE(schema.close(db));
 }

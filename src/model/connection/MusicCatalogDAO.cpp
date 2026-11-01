@@ -724,6 +724,25 @@ namespace model::connection {
 
     #pragma endregion
 
-    
+    #pragma region Actualización de registros
+
+    bool MusicCatalogDAO::updatePerson(string stage_name, Person data) {
+        // Validación de la operación por hacer:
+        int id_person = getPersonId(stage_name);
+        if (id_person == -1) {
+            return false;
+        }
+        // Ejecución de la operación actualizar:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "UPDATE persons SET (stage_name, real_name, birth_date, death_date) = (?,?,?,?) WHERE id_person = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la actualización.");
+        }
+        if (data.stage_name.has_value()) {
+        }
+    }
+
+    #pragma endregion
 
 }
