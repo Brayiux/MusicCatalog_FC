@@ -24,6 +24,7 @@ TEST_CASE("Obtener ID de intérpretes") {
     }
     REQUIRE(schema.close(db));
 }
+
 TEST_CASE("Obtener ID de personas") {
     sqlite3* db = nullptr;
     model::schema::Schema schema;
@@ -40,6 +41,7 @@ TEST_CASE("Obtener ID de personas") {
     }
     REQUIRE(schema.close(db));
 }
+
 TEST_CASE("Obtener ID de grupos") {
     sqlite3* db = nullptr;
     model::schema::Schema schema;
@@ -56,6 +58,7 @@ TEST_CASE("Obtener ID de grupos") {
     }
     REQUIRE(schema.close(db));
 }
+
 TEST_CASE("Obtener ID de álbumes") {
     sqlite3* db = nullptr;
     model::schema::Schema schema;
@@ -72,6 +75,7 @@ TEST_CASE("Obtener ID de álbumes") {
     }
     REQUIRE(schema.close(db));
 }
+
 TEST_CASE("Obtener ID de canciones") {
     sqlite3* db = nullptr;
     model::schema::Schema schema;
@@ -98,6 +102,7 @@ TEST_CASE("Obtener ID de canciones") {
     }
     REQUIRE(schema.close(db));
 }
+
 #pragma endregion
 
 
@@ -123,6 +128,8 @@ TEST_CASE("Pruebas de inserción de intérprete") {
 
     REQUIRE(schema.close(db));
 }
+
+#pragma region Pruebas de inserción de registros
 
 TEST_CASE("Pruebas de inserción de persona") {
     sqlite3* db = nullptr;
@@ -284,3 +291,4 @@ TEST_CASE("Pruebas de inserción de canción") {
     REQUIRE(schema.close(db));
 }
 
+#pragma endregion

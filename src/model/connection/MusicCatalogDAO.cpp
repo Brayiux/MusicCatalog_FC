@@ -436,10 +436,11 @@ namespace model::connection {
     int MusicCatalogDAO::getAlbumId(filesystem::path path) {
         return getEntityId("id_album", "albums", "path", path.string());
     }
-    
+
     int MusicCatalogDAO::getSongId(filesystem::path path) {
         return getEntityId("id_rola", "rolas", "path", path.string());
     }
+    
     #pragma endregion
 
 
