@@ -29,13 +29,30 @@ namespace model::connection {
              */
             int getPerformerId(string name);
             #pragma endregion
-
+            /**
+             * Obtiene el ID de una persona por su nombre, o -1
+             * si no la encuentra.
+             * @param name Nombre de la persona.
+             */
+            int getPersonId(string name);
+            /**
+             * Obtiene el ID de un grupo por su nombre, o -1
+             * si no lo encuentra.
+             */
+            int getGroupId(string name);
             /**
              * Obtiene el ID de un álbum por su path, o -1
              * si no lo encuentra.
              * @param path Ruta del álbum.
              */
             int getAlbumId(filesystem::path path);
+            /**
+             * Obtiene el ID de una canción por su path, o -1
+             * si no lo encuentra.
+             * @param path Ruta de la canción.
+             */
+            int getSongId(filesystem::path);
+
             #pragma endregion
 
             #pragma region Validación
