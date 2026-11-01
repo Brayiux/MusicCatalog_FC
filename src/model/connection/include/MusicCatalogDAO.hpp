@@ -17,7 +17,7 @@ namespace model::connection {
         private:
             /** @brief Puntero a la base de datos. */
             sqlite3* db = nullptr;
-            
+
 
             #pragma region Validación
             /**
@@ -228,12 +228,12 @@ namespace model::connection {
 
             /**
              * @brief Actualiza la información de una persona.
-             * @param name Nombre artístico de la persona.
+             * @param stage_name Nombre artístico de la persona.
              * @param data Información nueva.
              * @returns @b true Si el nombre es válido y la información fue actualizada,
              * y @b false si no.
              */
-            bool updatePerson(int name, Person data);
+            bool updatePerson(string stage_name, Person data);
             /**
              * @brief Actualiza la información de un grupo.
              * @param name Nombre del grupo.
@@ -241,7 +241,7 @@ namespace model::connection {
              * @returns @b true Si el nombre es válido y la información fue actualizada,
              * y @b false si no.
              */
-            bool updateGroup(int name, Group data);
+            bool updateGroup(string name, Group data);
             /**
              * @brief Actualiza la información de un álbum.
              * @param path ID de la ruta.
