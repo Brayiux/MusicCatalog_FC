@@ -9,6 +9,99 @@
 using namespace model::connection;
 using namespace std::chrono;
 
+#pragma region Obtener ID de entidades
+TEST_CASE("Obtener ID de intérpretes") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+    MusicCatalogDAO dao(db);
+    REQUIRE(dao.insertPerformer(0, "Intérprete"));
+    SUBCASE("Obtener ID de intérprete existente") {
+        CHECK(dao.getPerformerId("Intérprete") == 1);
+    }
+    SUBCASE("Obtener ID de intérprete no existente") {
+        CHECK(dao.getPerformerId("No existente") == -1);
+    }
+    REQUIRE(schema.close(db));
+}
+TEST_CASE("Obtener ID de personas") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+    MusicCatalogDAO dao(db);
+    Person pd;
+    pd.stage_name = "Persona";
+    REQUIRE(dao.insertPerson(pd));
+    SUBCASE("Obtener ID de persona existente") {
+        CHECK(dao.getPersonId("Persona") == 1);
+    }
+    SUBCASE("Obtener ID de persona no existente") {
+        CHECK(dao.getPersonId("No existente") == -1);
+    }
+    REQUIRE(schema.close(db));
+}
+TEST_CASE("Obtener ID de grupos") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+    MusicCatalogDAO dao(db);
+    Group gd;
+    gd.name = "Grupo";
+    REQUIRE(dao.insertGroup(gd));
+    SUBCASE("Obtener ID de grupo existente") {
+        CHECK(dao.getGroupId("Grupo") == 1);
+    }
+    SUBCASE("Obtener ID de grupo no existente") {
+        CHECK(dao.getGroupId("No existente") == -1);
+    }
+    REQUIRE(schema.close(db));
+}
+TEST_CASE("Obtener ID de álbumes") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+    MusicCatalogDAO dao(db);
+    Album ad;
+    ad.path = "~";
+    REQUIRE(dao.insertAlbum(ad));
+    SUBCASE("Obtener ID de álbum existente") {
+        CHECK(dao.getAlbumId("~") == 1);
+    }
+    SUBCASE("Obtener ID de álbum no existente") {
+        CHECK(dao.getAlbumId("~/no_existente") == -1);
+    }
+    REQUIRE(schema.close(db));
+}
+TEST_CASE("Obtener ID de canciones") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+    MusicCatalogDAO dao(db);
+    
+    REQUIRE(dao.insertPerformer(0, "Persona"));
+
+    Album ad;
+    ad.path = "~";
+    REQUIRE(dao.insertAlbum(ad));
+    
+    Song sd;
+    sd.path = "~/song.mp3";
+    sd.performer = "Persona";
+    sd.album = "~";
+    REQUIRE(dao.insertSong(sd));
+    
+    SUBCASE("Obtener ID de canción existente") {
+        CHECK(dao.getSongId("~/song.mp3") == 1);
+    }
+    SUBCASE("Obtener ID de canción no existente") {
+        CHECK(dao.getSongId("~/no_existente") == -1);
+    }
+    REQUIRE(schema.close(db));
+}
+#pragma endregion
+
+
+
 TEST_CASE("Pruebas de inserción de intérprete") {
 
     sqlite3* db = nullptr;

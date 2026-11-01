@@ -29,36 +29,6 @@ namespace model::connection {
              * @param id_entity Valor del atributo que identifica a la entidad.
              */
             int getEntityId(string id_name, string table_name, string id_entity_name, string id_entity);
-            /**
-             * Obtiene el ID de un intérprete por su nombre, o -1
-             * si no lo encuentra.
-             * @param name Nombre del intérprete.
-             */
-            int getPerformerId(string name);
-            #pragma endregion
-            /**
-             * Obtiene el ID de una persona por su nombre, o -1
-             * si no la encuentra.
-             * @param name Nombre de la persona.
-             */
-            int getPersonId(string name);
-            /**
-             * Obtiene el ID de un grupo por su nombre, o -1
-             * si no lo encuentra.
-             */
-            int getGroupId(string name);
-            /**
-             * Obtiene el ID de un álbum por su path, o -1
-             * si no lo encuentra.
-             * @param path Ruta del álbum.
-             */
-            int getAlbumId(filesystem::path path);
-            /**
-             * Obtiene el ID de una canción por su path, o -1
-             * si no lo encuentra.
-             * @param path Ruta de la canción.
-             */
-            int getSongId(filesystem::path);
             
             #pragma endregion
 
@@ -108,6 +78,38 @@ namespace model::connection {
              * @param db dependencia a la base de datos.
              */
             MusicCatalogDAO(sqlite3* db);
+
+            #pragma region Obtención de datos
+            /**
+             * Obtiene el ID de un intérprete por su nombre, o -1
+             * si no lo encuentra.
+             * @param name Nombre del intérprete.
+             */
+            int getPerformerId(string name);
+            /**
+             * Obtiene el ID de una persona por su nombre, o -1
+             * si no la encuentra.
+             * @param name Nombre de la persona.
+             */
+            int getPersonId(string name);
+            /**
+             * Obtiene el ID de un grupo por su nombre, o -1
+             * si no lo encuentra.
+             */
+            int getGroupId(string name);
+            /**
+             * Obtiene el ID de un álbum por su path, o -1
+             * si no lo encuentra.
+             * @param path Ruta del álbum.
+             */
+            int getAlbumId(filesystem::path path);
+            /**
+             * Obtiene el ID de una canción por su path, o -1
+             * si no lo encuentra.
+             * @param path Ruta de la canción.
+             */
+            int getSongId(filesystem::path);
+            #pragma endregion
 
             #pragma region Inserción de registros
             /**
