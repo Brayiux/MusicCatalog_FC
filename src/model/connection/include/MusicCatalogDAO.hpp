@@ -21,7 +21,14 @@ namespace model::connection {
             static MusicCatalogDAO instance;
 
             #pragma region Obtención de datos
-
+            /**
+             * Obtiene el ID de una entidad en la base de datos.
+             * @param id_name Nombre del identificador de la entidad en la base de datos.
+             * @param id_entity_name Nombre del atributo que identifica a la entidad.
+             * @param id_entity Valor del atributo que identifica a la entidad.
+             * @param table_name Nombre de la tabla de la entidad en la base de datos.
+             */
+            int getEntityId(string id_name, string id_entity_name, string id_entity, string table_name);
             /**
              * Obtiene el ID de un intérprete por su nombre, o -1
              * si no lo encuentra.
@@ -52,7 +59,7 @@ namespace model::connection {
              * @param path Ruta de la canción.
              */
             int getSongId(filesystem::path);
-
+            
             #pragma endregion
 
             #pragma region Validación
