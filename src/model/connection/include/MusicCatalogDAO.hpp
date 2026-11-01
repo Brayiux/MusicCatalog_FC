@@ -38,6 +38,47 @@ namespace model::connection {
             int getAlbumId(filesystem::path path);
             #pragma endregion
 
+            #pragma region Validación
+            /**
+             * @param name Nombre del intérprete.
+             * @returns @b true si existe un intérprete con el nombre indicado,
+             * en la base de datos y @b false si no.
+             */
+            bool existsPerformer(string name);
+            /**
+             * @param stage_name Nombre artístico de la persona.
+             * @returns @b true si existe una persona con el nombre indicado,
+             * en la base de datos y @b false si no.
+             */
+            bool existsPerson(string stage_name);
+            /**
+             * @param name Nombre del grupo.
+             * @returns @b true si existe un grupo con el nombre indicado,
+             * en la base de datos y @b false si no.
+             */
+            bool existsGroup(string name);
+            /**
+             * @param stage_name Nombre artístico de la persona.
+             * @param group_name Nombre del grupo.
+             * @returns @b true si la persona con el nombre artístico indicado
+             * es miembro del grupo con el nombre indicado.
+             */
+            bool isMember(string stage_name, string group_name);
+            /**
+             * @param path Ruta del álbum.
+             * @returns @b true si existe un álbum con la ruta indicada
+             * en la base de datos y @b false si no.
+             */
+            bool existsAlbum(filesystem::path path);
+            /**
+             * @param path Ruta de la canción.
+             * @returns @b true si existe una canción con la ruta indicada
+             * en la base de datos y @b false si no.
+             */
+            bool existsSong(filesystem::path path);
+
+            #pragma endregion
+
         public:
             /** @brief Construye una instancia del DAO
              * @param db dependencia a la base de datos.
