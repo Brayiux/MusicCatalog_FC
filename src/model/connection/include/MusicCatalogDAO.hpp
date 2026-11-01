@@ -17,9 +17,7 @@ namespace model::connection {
         private:
             /** @brief Puntero a la base de datos. */
             sqlite3* db = nullptr;
-            /** @brief La única instancia del DAO. */
-            static MusicCatalogDAO instance;
-
+            
 
             #pragma region Validación
             /**
@@ -173,7 +171,7 @@ namespace model::connection {
 
             #pragma endregion
 
-            #pragma region Eliminación
+            #pragma region Eliminación de registros
 
             /**
              * @brief Elimina a un intérprete de la base de datos por
@@ -226,6 +224,42 @@ namespace model::connection {
 
             #pragma endregion
 
+            #pragma region Actualización de registros
+
+            /**
+             * @brief Actualiza la información de una persona.
+             * @param name Nombre artístico de la persona.
+             * @param data Información nueva.
+             * @returns @b true Si el nombre es válido y la información fue actualizada,
+             * y @b false si no.
+             */
+            bool updatePerson(int name, Person data);
+            /**
+             * @brief Actualiza la información de un grupo.
+             * @param name Nombre del grupo.
+             * @param data Información nueva.
+             * @returns @b true Si el nombre es válido y la información fue actualizada,
+             * y @b false si no.
+             */
+            bool updateGroup(int name, Group data);
+            /**
+             * @brief Actualiza la información de un álbum.
+             * @param path ID de la ruta.
+             * @param data Información nueva.
+             * @returns @b true Si la ruta es válida y la información fue actualizada,
+             * y @b false si no.
+             */
+            bool updateAlbum(filesystem::path path, Album data);
+            /**
+             * @brief Actualiza la información de una canción.
+             * @param path Ruta de la canción.
+             * @param data Información nueva.
+             * @returns @b true Si la ruta es válida y la información fue actualizada,
+             * y @b false si no.
+             */
+            bool updateSong(filesystem::path path, Song data);
+
+            #pragma endregion
     };
     
 }
