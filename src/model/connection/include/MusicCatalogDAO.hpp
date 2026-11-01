@@ -226,35 +226,6 @@ namespace model::connection {
 
             #pragma endregion
 
-            #pragma region Obtención de datos
-
-            /**
-             * @returns La información de una persona por su nombre artístico
-             * o un puntero nulo si no existe.
-             * @param name Nombre artístico de la persona.
-             */
-            Person* getPersonOrNull(string name);
-            /**
-             * @returns La información de un grupo por su nombre
-             * o un puntero nulo si no existe.
-             * @param name Nombre del grupo.
-             */
-            Group* getGroupOrNull(string name);
-            /**
-             * @returns La información de un álbum por su path
-             * o un puntero nulo si no existe.
-             * @param path Ruta del álbum.
-             */
-            Album* getAlbumOrNull(filesystem::path path);
-            /**
-             * @returns La información de una persona por su título y el nombre
-             * de su intérprete.
-             * @param title Título de la canción.
-             * @param performer Intérprete.
-             */
-            Song* getSongOrNull(string title, string performer);
-
-            #pragma endregion
     };
     
 }
