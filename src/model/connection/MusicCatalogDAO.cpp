@@ -368,16 +368,45 @@ namespace model::connection {
 
     #pragma endregion
 
+    #pragma region Remoción
+
+    bool MusicCatalogDAO::deletePerformer(string name) {
+        // Validación de la operación por hacer:
+        int id_performer = getPerformerId(name);
+        if (id_performer == -1) {
+            return false;
+        }
+        // Ejecución de la eliminación:
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, "DELETE FROM performers WHERE id_performer = ?;", -1, &stmt, nullptr)
+                != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al preparar la eliminación.");
+        }
+        sqlite3_bind_int(stmt, 1, id_performer);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la eliminación.");
+        }
+        sqlite3_finalize(stmt);
+        // Notificación de la eliminación:
+        return true;
+    }
+
+
+    #pragma endregion
+
     #pragma region Obtención de datos
 
-    int MusicCatalogDAO::getPerformerId(string name) {
+    int MusicCatalogDAO::getEntityId(string id_name, string table_name, string id_entity_name, string id_entity) {
         sqlite3_stmt* stmt = nullptr;
-        if (sqlite3_prepare_v2(db, "SELECT id_performer FROM performers WHERE name = ?;", -1, &stmt, nullptr)
+        
+        if (sqlite3_prepare_v2(db, format("SELECT {} FROM {} WHERE {} = ?;", id_name, table_name, id_entity_name).c_str(), -1, &stmt, nullptr)
                 != SQLITE_OK) {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al preparar la consulta.");
         }
-        sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 1, id_entity.c_str(), -1, SQLITE_TRANSIENT);
         int op = sqlite3_step(stmt);
         if (op == SQLITE_DONE) {
             sqlite3_finalize(stmt);
@@ -390,31 +419,17 @@ namespace model::connection {
         int id = sqlite3_column_int(stmt, 0);
         sqlite3_finalize(stmt);
         return id;
+    }
+
+    int MusicCatalogDAO::getPerformerId(string name) {
+        return getEntityId("id_performer", "performers", "name", name);
     }
 
     int MusicCatalogDAO::getAlbumId(filesystem::path path) {
-        sqlite3_stmt* stmt = nullptr;
-        if (sqlite3_prepare_v2(db, "SELECT id_album FROM albums WHERE path = ?;", -1, &stmt, nullptr)
-                != SQLITE_OK) {
-            sqlite3_finalize(stmt);
-            throw SQLiteException("Error: Al preparar la consulta.");
-        }
-        string p = path.string();
-        sqlite3_bind_text(stmt, 1, p.c_str(), -1, SQLITE_TRANSIENT);
-        int op = sqlite3_step(stmt);
-        if (op == SQLITE_DONE) {
-            sqlite3_finalize(stmt);
-            return -1;
-        }
-        if (op != SQLITE_ROW) {
-            sqlite3_finalize(stmt);
-            throw SQLiteException("Error: Al ejecutar la consulta.");
-        }
-        int id = sqlite3_column_int(stmt, 0);
-        sqlite3_finalize(stmt);
-        return id;
+        return getEntityId("id_album", "albums", "path", path.string());
     }
 
     #pragma endregion
+
 
 }
