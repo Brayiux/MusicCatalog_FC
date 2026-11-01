@@ -97,6 +97,58 @@ namespace model::connection {
 
             #pragma endregion
 
+            #pragma region Remoción
+
+            /**
+             * @brief Elimina a un intérprete de la base de datos por
+             * su nombre.
+             * @param name Nombre del intérprete a eliminar.
+             * @return @b true si el intérprete existía y fue removido con éxito,
+             * y @b false si no.
+             */
+            bool deletePerformer(string name);
+            /**
+             * @brief Elimina a una persona de la base de datos por
+             * su nombre.
+             * @param name Nombre de la persona a eliminar.
+             * @return @b true si la persona existía y fue removida con éxito,
+             * y @b false si no.
+             */
+            bool deletePerson(string name);
+            /**
+             * @brief Elimina a un grupo de la base de datos por
+             * su nombre.
+             * @param name Nombre del grupo a eliminar.
+             * @return @b true si el grupo existía y fue removido con éxito,
+             * y @b false si no.
+             */
+            bool deleteGroup(string name);
+            /**
+             * @brief Elimina a una persona de un grupo de la base de datos.
+             * @param stage_name Nombre artístico de la persona a eliminar.
+             * @param group_name Nombre del grupo de donde la persona se elimina.
+             * @return @b true si tanto el grupo como la persona existen y la persona
+             * fue eliminada con éxito, y @b false si no.
+             */
+            bool deleteInGroup(string performer_name, string group_name);
+            /**
+             * @brief Elimina a un álbum de la base de datos por
+             * su ruta.
+             * @param path Nombre del grupo a eliminar.
+             * @return @b true si el álbum existía y fue removido con éxito,
+             * y @b false si no.
+             */
+            bool deleteAlbum(filesystem::path path);
+            /**
+             * @brief Elimina una canción de la base de datos por su ruta.
+             * @param path Ruta de la canción.
+             * @return @b true si la canción existía en la base de datos y
+             * fue removida con éxito, y @b false si no.
+             */
+            bool deleteSong(filesystem::path path);
+            
+
+            #pragma endregion
 
             #pragma region Obtención de datos
 
