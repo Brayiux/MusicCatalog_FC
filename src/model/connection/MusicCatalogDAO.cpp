@@ -428,12 +428,15 @@ namespace model::connection {
     int MusicCatalogDAO::getPersonId(string name) {
         return getEntityId("id_person", "persons", "stage_name", name);
     }
+
     int MusicCatalogDAO::getGroupId(string name) {
         return getEntityId("id_group", "groups", "name", name);
     }
+
     int MusicCatalogDAO::getAlbumId(filesystem::path path) {
         return getEntityId("id_album", "albums", "path", path.string());
     }
+    
     int MusicCatalogDAO::getSongId(filesystem::path path) {
         return getEntityId("id_rola", "rolas", "path", path.string());
     }
