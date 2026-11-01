@@ -734,14 +734,55 @@ namespace model::connection {
         }
         // Ejecución de la operación actualizar:
         sqlite3_stmt* stmt = nullptr;
-        if (sqlite3_prepare_v2(db, "UPDATE persons SET (stage_name, real_name, birth_date, death_date) = (?,?,?,?) WHERE id_person = ?;", -1, &stmt, nullptr)
+        if (sqlite3_prepare_v2(db, "UPDATE persons SET stage_name = ?, real_name = ?, birth_date = ?, death_date = ? WHERE id_person = ?;", -1, &stmt, nullptr)
                 != SQLITE_OK) {
             sqlite3_finalize(stmt);
             throw SQLiteException("Error: Al preparar la actualización.");
         }
+        Person* pd = getPerson(stage_name);
         if (data.stage_name.has_value()) {
+            sqlite3_bind_text(stmt, 1, data.stage_name.value().c_str(), -1, SQLITE_TRANSIENT);
+        } else {
+            sqlite3_bind_text(stmt, 1, pd->stage_name.value().c_str(), -1, SQLITE_TRANSIENT);
         }
+        if (data.real_name.has_value()) {
+            sqlite3_bind_text(stmt, 2, data.real_name.value().c_str(), -1, SQLITE_TRANSIENT);
+        } else if (pd->real_name.has_value()) {
+            sqlite3_bind_text(stmt, 2, pd->real_name.value().c_str(), -1, SQLITE_TRANSIENT);
+        } else {
+            sqlite3_bind_null(stmt, 2);
+        }
+        if (data.birth_date.has_value()) {
+            string bd = format("{}", data.birth_date.value());
+            sqlite3_bind_text(stmt, 3, bd.c_str(), -1, SQLITE_TRANSIENT);
+        } else if (pd->birth_date.has_value()) {
+            string bd = format("{}", pd->birth_date.value());
+            sqlite3_bind_text(stmt, 3, bd.c_str(), -1, SQLITE_TRANSIENT);
+        } else {
+            sqlite3_bind_null(stmt, 3);
+        }
+        if (data.death_date.has_value()) {
+            string dd = format("{}", data.death_date.value());
+            sqlite3_bind_text(stmt, 4, dd.c_str(), -1, SQLITE_TRANSIENT);
+        } else if (pd->death_date.has_value()) {
+            string dd = format("{}", pd->death_date.value());
+            sqlite3_bind_text(stmt, 4, dd.c_str(), -1, SQLITE_TRANSIENT);
+        } else {
+            sqlite3_bind_null(stmt, 4);
+        }
+        sqlite3_bind_int(stmt, 5, id_person);
+        delete pd;
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            throw SQLiteException("Error: Al ejecutar la actualización.");
+        }
+
+        sqlite3_finalize(stmt);
+        // Notificación de la actualización:
+        return true;
     }
+
+
 
     #pragma endregion
 

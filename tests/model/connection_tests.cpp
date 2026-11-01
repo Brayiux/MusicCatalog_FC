@@ -603,3 +603,78 @@ TEST_CASE("Eliminar canciones") {
 }
 
 #pragma endregion
+
+#pragma region Pruebas de actualización de registros
+
+TEST_CASE("Actualizar datos de personas") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+    Person pd;
+    pd.stage_name = "Persona";
+    pd.birth_date = year_month_day{year{2000}, month{1}, day{1}};
+
+    REQUIRE(dao.insertPerson(pd));
+
+    SUBCASE("Actualizar datos de persona existente") {
+        Person p;
+        p.stage_name = "Nueva Persona";
+        p.real_name = "Nombre Real";
+        p.death_date = year_month_day{year{2020}, month{1}, day{1}};
+        REQUIRE(dao.updatePerson("Persona", p));
+
+        Person* new_p = dao.getPerson("Nueva Persona");
+        REQUIRE(new_p != nullptr);
+        CHECK(new_p->stage_name.value() == "Nueva Persona");
+        CHECK(new_p->birth_date.value() == year_month_day{year{2000}, month{1}, day{1}});
+        CHECK(new_p->death_date.value() == year_month_day{year{2020}, month{1}, day{1}});
+        delete new_p;
+    }
+
+    SUBCASE("Actualizar datos de persona no existente") {
+        CHECK(dao.updatePerson("No existente", pd) == false);
+    }
+
+    REQUIRE(schema.close(db));
+}
+
+TEST_CASE("Actualizar datos de grupos") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+
+    
+    REQUIRE(schema.close(db));
+}
+
+TEST_CASE("Actualizar datos de álbumes") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+
+    
+    REQUIRE(schema.close(db));
+}
+
+TEST_CASE("Actualizar datos de canciones") {
+    sqlite3* db = nullptr;
+    model::schema::Schema schema;
+    REQUIRE(schema.open(":memory:", &db, nullptr));
+
+    MusicCatalogDAO dao(db);
+
+
+    
+    REQUIRE(schema.close(db));
+}
+
+#pragma endregion
